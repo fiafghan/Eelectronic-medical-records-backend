@@ -2,9 +2,11 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import RegisterSerializer
+from .models import RegisterSerializer, Patient
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import PatientSerializer
+from rest_framework import generics, permissions
 
 class HelloWorld (APIView):
     def get (self, request):
@@ -23,7 +25,6 @@ class LoginView(APIView):
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
-
         if not email or not password:
             return Response({"error": "Email and password are required."},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -33,7 +34,6 @@ class LoginView(APIView):
         if user is None:
             return Response({"error": "Invalid credentials."},
                             status=status.HTTP_401_UNAUTHORIZED)
-
         refresh = RefreshToken.for_user(user)
         return Response({
             "refresh": str(refresh),
@@ -45,3 +45,13 @@ class LoginView(APIView):
             }
         }, status=status.HTTP_200_OK)
 
+class PatientListCreateView(generics.ListCreateAPIView):
+    queryset = Patient.objects.all()
+    serializer_class = PatientSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class PatientRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Patient.objects.all()
+    serializer_class = PatientSerializer
+    permission_classes = [permissions.AllowAny]
