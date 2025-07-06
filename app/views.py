@@ -2,10 +2,10 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import RegisterSerializer, Patient
+from .models import Patient
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import PatientSerializer
+from .serializers import PatientSerializer, RegisterSerializer
 from rest_framework import generics, permissions
 
 class HelloWorld (APIView):
